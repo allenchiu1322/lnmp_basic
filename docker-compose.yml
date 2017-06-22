@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+  web:
+    build: ./docker_nginx/
+    container_name: web
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/code
+  php:
+    build: ./docker_php/
+    container_name: php
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./src:/code
+#    links:
+#      - db
+  db:
+    image: mysql:latest
+    container_name: db
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    environment:
+       MYSQL_DATABASE: main
+       MYSQL_ROOT_PASSWORD: lamptest
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+     - PMA_ARBITRARY=1
+     - PMA_HOST=db
+     - PMA_USER=root
+     - PMA_PASSWORD=lamptest
+    ports:
+     - 8080:80
+    volumes:
+     - /sessions
